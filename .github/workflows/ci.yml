@@ -8,19 +8,28 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout do Código
         uses: actions/checkout@v2
-        
+
       - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
           java-version: 17
-          distribution: 'adopt'
-          
+          distribution: "adopt"
+
       - name: Build com Maven
         run: mvn -B clean install
 
       - name: Rodar Testes Unitários
         run: mvn test
+
+      - name: Gerar Relatório de Cobertura com Jacoco
+        run: mvn jacoco:report
+
+      - name: Arquivar Relatórios de Cobertura
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: target/site/jacoco
